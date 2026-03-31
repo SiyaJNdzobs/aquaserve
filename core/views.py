@@ -19,23 +19,49 @@ def home(request):
 
 # AUTH
 def login_view(request):
+    error = None
     if request.method == 'POST':
-        username = request.POST['username']
-        request.session['user'] = username
-        messages.success(request, "Login successful")
-        return redirect('home')
-    return render(request, 'core/login.html')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user_data = users.get(username)
+        if user_data and user_data.get('password') == password:
+            request.session['user'] = username
+            messages.success(request, "Login successful")
+            return redirect('home')
+        error = "Invalid username or password"
+
+    return render(request, 'core/login.html', {'error': error})
 
 def register(request):
+    error = None
     if request.method == 'POST':
-        username = request.POST['username']
-        users[username] = True
-        request.session['user'] = username
-        return redirect('home')
-    return render(request, 'core/register.html')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        home_address = request.POST.get('home_address')
+        cell_number = request.POST.get('cell_number')
+
+        if not all([username, password, email, home_address, cell_number]):
+            error = "Please fill all required fields."
+        elif username in users:
+            error = "Username already exists"
+        else:
+            users[username] = {
+                'password': password,
+                'email': email,
+                'home_address': home_address,
+                'cell_number': cell_number,
+            }
+            request.session['user'] = username
+            messages.success(request, "Registration successful")
+            return redirect('home')
+
+    return render(request, 'core/register.html', {'error': error})
 
 # REPORT ISSUE
 def report_issue(request):
+    user = request.session.get('user', 'Guest')
     ref = None
     if request.method == 'POST':
         issue = request.POST.get('issue')
@@ -48,38 +74,73 @@ def report_issue(request):
             requests_db[ref] = "Request Received"
             messages.success(request, f"Issue submitted! Reference: {ref}")
 
-    return render(request, 'core/report.html', {'ref': ref})
+    return render(request, 'core/report.html', {'ref': ref, 'username': user})
 
 # TRACK
 def track_request(request):
+    user = request.session.get('user', 'Guest')
     status = None
     if request.method == 'POST':
         ref = request.POST.get('ref')
         status = requests_db.get(ref, "Reference not found")
-    return render(request, 'core/track.html', {'status': status})
+    return render(request, 'core/track.html', {'status': status, 'username': user})
+
+# ABOUT
+def about(request):
+    user = request.session.get('user', 'Guest')
+    return render(request, 'core/about.html', {'username': user})
 
 # ACCOUNT
 def account(request):
-    user = request.session.get('user', 'user1')
+    user = request.session.get('user')
+    if user is None:
+        return redirect('login')
+
     balance = balances.get(user, 100)
-    return render(request, 'core/account.html', {'balance': balance})
+    profile = users.get(user, {})
+
+    return render(request, 'core/account.html', {
+        'balance': balance,
+        'username': user,
+        'email': profile.get('email', 'Not set'),
+        'home_address': profile.get('home_address', 'Not set'),
+        'cell_number': profile.get('cell_number', 'Not set'),
+    })
 
 # PAYMENT
 def payment(request):
-    user = request.session.get('user', 'user1')
+    user = request.session.get('user')
+    if user is None:
+        return redirect('login')
+
     balance = balances.get(user, 100)
+    confirmed = False
 
     if request.method == 'POST':
-        amount = int(request.POST.get('amount'))
+        confirm = request.POST.get('confirm_balance') == 'on'
+        amount_raw = request.POST.get('amount')
 
-        if amount <= balance:
-            balance -= amount
-            balances[user] = balance
-            messages.success(request, "Payment successful")
+        if not confirm:
+            messages.error(request, "Please confirm your balance before paying.")
+        elif not amount_raw or int(amount_raw) <= 0:
+            messages.error(request, "Enter a valid amount.")
         else:
-            messages.error(request, "Insufficient balance")
+            amount = int(amount_raw)
+            if amount <= balance:
+                balance -= amount
+                balances[user] = balance
+                messages.success(request, f"Payment of R{amount} successful")
+                confirmed = True
+            else:
+                messages.error(request, "Insufficient balance")
 
-    return render(request, 'core/payment.html', {'balance': balance})
+    return render(request, 'core/payment.html', {
+        'balance': balance,
+        'username': user,
+        'email': users.get(user, {}).get('email', ''),
+        'home_address': users.get(user, {}).get('home_address', ''),
+        'cell_number': users.get(user, {}).get('cell_number', ''),
+    })
 
 def about(request):
     return render(request, 'core/about.html')
