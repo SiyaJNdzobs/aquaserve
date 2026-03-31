@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2>Track Request</h2>
+
+<form method="POST">
+{% csrf_token %}
+<input type="text" name="ref" placeholder="Enter Reference">
+<button class="btn">Track</button>
+</form>
+
+{% if status %}
+<p>Status: {{ status }}</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2>Your Water Account</h2>
+
+<div class="account-box">
+    <p><strong>Current Balance:</strong></p>
+    <h1>R{{ balance }}</h1>
+</div>
+
+<div class="account-actions">
+    <a href="/payment/" class="btn">Pay Bill</a>
+</div>
+
+{% endblock %}
