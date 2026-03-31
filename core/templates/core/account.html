@@ -1,11 +1,14 @@
 {% extends 'core/base.html' %}
 {% block content %}
 
-<h2>Your Water Account</h2>
+<h2>Your Water Profile</h2>
 
 <div class="account-box">
-    <p><strong>Current Balance:</strong></p>
-    <h1>R{{ balance }}</h1>
+    <h3>Welcome, {{ username }}</h3>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><strong>Home Address:</strong> {{ home_address }}</p>
+    <p><strong>Cell Number:</strong> {{ cell_number }}</p>
+    <p><strong>Current Balance:</strong> <span style="font-size: 1.4rem;">R{{ balance }}</span></p>
 </div>
 
 <div class="account-actions">

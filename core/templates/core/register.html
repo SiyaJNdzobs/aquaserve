@@ -4,10 +4,17 @@
 <div class="form-container">
     <h2>Create Account</h2>
 
+    {% if error %}
+    <div class="alert" style="color: #de3838; margin-bottom: 10px;">{{ error }}</div>
+    {% endif %}
+
     <form method="POST">
         {% csrf_token %}
 
         <input type="text" name="username" placeholder="Choose Username" required>
+        <input type="email" name="email" placeholder="Email Address" required>
+        <input type="text" name="home_address" placeholder="Home Address" required>
+        <input type="tel" name="cell_number" placeholder="Cell Number" required>
         <input type="password" name="password" placeholder="Create Password" required>
 
         <button class="btn">Register</button>

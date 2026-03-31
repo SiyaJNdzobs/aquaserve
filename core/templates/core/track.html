@@ -1,16 +1,22 @@
 {% extends 'core/base.html' %}
 {% block content %}
 
-<h2>Track Request</h2>
+<div class="form-container">
+    <h2>Track Request</h2>
 
-<form method="POST">
-{% csrf_token %}
-<input type="text" name="ref" placeholder="Enter Reference">
-<button class="btn">Track</button>
-</form>
+    <p>Logged in as: <strong>{{ username }}</strong></p>
 
-{% if status %}
-<p>Status: {{ status }}</p>
-{% endif %}
+    <p>News: We recently launched improved location-based tracking for requests in your area. Check status updates below.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="ref" placeholder="Enter Reference" required>
+        <button class="btn">Track</button>
+    </form>
+
+    {% if status %}
+    <p style="margin-top: 14px;"><strong>Status:</strong> {{ status }}</p>
+    {% endif %}
+</div>
 
 {% endblock %}

@@ -1,25 +1,36 @@
 {% extends 'core/base.html' %}
 {% block content %}
 
-<h2>Report Issue</h2>
+<div class="form-container">
+    <h2>Report Issue</h2>
 
-<form method="POST">
-{% csrf_token %}
+    <p>Logged in as: <strong>{{ username }}</strong></p>
 
-<select name="issue" required>
-    <option value="">Select Issue</option>
-    <option>Burst Pipe</option>
-    <option>Water Leak</option>
-    <option>Supply Issue</option>
-</select>
+    <p>Latest updates: the system now processes reports in under 2 business hours and sends you progress status by SMS and email.</p>
 
-<input type="text" name="location" placeholder="Enter location" required>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-<input type="file" disabled>
-<p>(Image upload simulated)</p>
+    <form method="POST">
+        {% csrf_token %}
 
-<button class="btn">Submit</button>
+        <select name="issue" required>
+            <option value="">Select Issue</option>
+            <option>Burst Pipe</option>
+            <option>Water Leak</option>
+            <option>Supply Issue</option>
+        </select>
 
-</form>
+        <input type="text" name="location" placeholder="Enter location" required>
+
+        <input type="file" disabled>
+        <p>(Image upload simulated)</p>
+
+        <button class="btn">Submit</button>
+    </form>
+</div>
 
 {% endblock %}

@@ -1,11 +1,13 @@
 {% extends 'core/base.html' %}
 {% block content %}
 
-<h2>About AquaServe</h2>
+<div class="form-container">
+    <h2>About AquaServe</h2>
+    <p>Logged in as: <strong>{{ username }}</strong></p>
 
-<div class="about-section">
+    <div class="about-section">
 
-    <h3>Our Vision</h3>
+        <h3>Our Vision</h3>
     <p>
         To provide a simple, efficient, and accessible platform for managing
         water-related municipal services.
@@ -33,6 +35,12 @@
         AquaServe complies with POPIA (Protection of Personal Information Act)
         and ensures responsible handling of user data.
     </p>
+
+    <h3>Latest News</h3>
+    <p>New: Tiered water usage advice and sustainability tips are now available in your profile dashboard.</p>
+
+    <h3>Community Updates</h3>
+    <p>We are expanding our support network with local volunteer teams across all regions to respond to outages faster.</p>
 
 </div>
 

@@ -1,14 +1,28 @@
 {% extends 'core/base.html' %}
 {% block content %}
 
-<h2>Pay Water Bill</h2>
+<div class="form-container">
+    <h2>Pay Water Bill</h2>
 
-<p>Balance: R{{ balance }}</p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-<form method="POST">
-{% csrf_token %}
-<input type="number" name="amount" placeholder="Enter amount">
-<button class="btn">Pay Now</button>
-</form>
+    <p><strong>User:</strong> {{ username }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><strong>Home Address:</strong> {{ home_address }}</p>
+    <p><strong>Cell Number:</strong> {{ cell_number }}</p>
+    <p><strong>Current Balance:</strong> R{{ balance }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label style="display:block; margin:12px 0;"><input type="checkbox" name="confirm_balance" required> I confirm my current balance is correct</label>
+        <input type="number" name="amount" placeholder="Enter amount to pay" min="1" required>
+        <button class="btn">Pay Now</button>
+    </form>
+</div>
 
 {% endblock %}

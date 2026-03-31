@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-sd0b$k*)5$!s6vq$4hk+ue%839(!!w0$$%8v*+y(a+gs0t@z5k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['aquaserve.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
