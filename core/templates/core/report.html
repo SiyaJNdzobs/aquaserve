@@ -2,11 +2,19 @@
 {% block content %}
 
 <div class="form-container">
-    <h2>Report Issue</h2>
+    <h2>🔧 Report Issue</h2>
+    <p style="color: #2e8b57; font-weight: bold;">Logged in as: {{ username }}</p>
 
-    <p>Logged in as: <strong>{{ username }}</strong></p>
-
-    <p>Latest updates: the system now processes reports in under 2 business hours and sends you progress status by SMS and email.</p>
+    <div class="service-info">
+        <h3>⚡ Quick Response Service</h3>
+        <p>Latest updates: the system now processes reports in under 2 business hours and sends you progress status by SMS and email.</p>
+        <p><strong>Our Response Times:</strong></p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>🚨 Emergency (Burst Pipe): 1-2 hours</li>
+            <li>⚠️ Water Leak: 4-6 hours</li>
+            <li>📉 Supply Issue: 24 hours</li>
+        </ul>
+    </div>
 
     {% if messages %}
         {% for message in messages %}
@@ -18,19 +26,26 @@
         {% csrf_token %}
 
         <select name="issue" required>
-            <option value="">Select Issue</option>
+            <option value="">Select Issue Type</option>
             <option>Burst Pipe</option>
             <option>Water Leak</option>
             <option>Supply Issue</option>
+            <option>Pressure Problem</option>
+            <option>Water Quality Issue</option>
         </select>
 
-        <input type="text" name="location" placeholder="Enter location" required>
+        <input type="text" name="location" placeholder="Enter your location or street address" required>
+        <input type="text" placeholder="Description of issue" disabled style="opacity: 0.6;">
 
-        <input type="file" disabled>
-        <p>(Image upload simulated)</p>
+        <p style="font-size: 0.9rem; color: #666;">(Image upload simulated)</p>
 
-        <button class="btn">Submit</button>
+        <button class="btn">Submit Report</button>
     </form>
+
+    <div class="service-info">
+        <h3>📱 After Submitting</h3>
+        <p>You'll receive a reference number to track your request. Updates will be sent via SMS and email to the number and address on file.</p>
+    </div>
 </div>
 
 {% endblock %}

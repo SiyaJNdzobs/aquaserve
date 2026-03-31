@@ -2,7 +2,8 @@
 {% block content %}
 
 <div class="form-container">
-    <h2>Pay Water Bill</h2>
+    <h2>💳 Pay Water Bill</h2>
+    <p style="color: #2e8b57; font-weight: bold;">Logged in as: {{ username }}</p>
 
     {% if messages %}
         {% for message in messages %}
@@ -10,19 +11,31 @@
         {% endfor %}
     {% endif %}
 
-    <p><strong>User:</strong> {{ username }}</p>
-    <p><strong>Email:</strong> {{ email }}</p>
-    <p><strong>Home Address:</strong> {{ home_address }}</p>
-    <p><strong>Cell Number:</strong> {{ cell_number }}</p>
-    <p><strong>Current Balance:</strong> R{{ balance }}</p>
+    <div class="account-details">
+        <p><strong>User:</strong> {{ username }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>Home Address:</strong> {{ home_address }}</p>
+        <p><strong>Cell Number:</strong> {{ cell_number }}</p>
+        <p style="font-size: 1.2rem; color: #2e8b57;"><strong>Current Balance:</strong> R{{ balance }}</p>
+    </div>
 
     <form method="POST">
         {% csrf_token %}
 
-        <label style="display:block; margin:12px 0;"><input type="checkbox" name="confirm_balance" required> I confirm my current balance is correct</label>
-        <input type="number" name="amount" placeholder="Enter amount to pay" min="1" required>
-        <button class="btn">Pay Now</button>
+        <label style="display:block; margin:12px 0;">
+            <input type="checkbox" name="confirm_balance" required> I confirm my current balance is correct
+        </label>
+        <input type="number" name="amount" placeholder="Enter amount to pay" min="1" required class="payment-input">
+        <button class="btn">💰 Pay Now</button>
     </form>
+
+    <div class="service-info">
+        <h3>ℹ️ Payment Information</h3>
+        <p><strong>Payment Methods:</strong> Card, EFT, Wallet</p>
+        <p><strong>Processing Time:</strong> Instant confirmation</p>
+        <p><strong>Receipt:</strong> Sent via email and SMS</p>
+        <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Your payment is secure and encrypted.</p>
+    </div>
 </div>
 
 {% endblock %}
