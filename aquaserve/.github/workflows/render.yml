@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: my-django-app
+    name: aquaserve
     runtime: python
     buildCommand: pip install -r requirements.txt && python manage.py migrate
     startCommand: gunicorn config.wsgi
