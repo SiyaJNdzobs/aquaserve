@@ -1,0 +1,129 @@
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f5f5f5;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #2e8b57;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin: 0 10px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: white;
+    color: black;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.hero span {
+    color: green;
+}
+
+/* CARDS */
+.cards {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    flex: 1;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    background: #e0f2e9;
+    transform: scale(1.02);
+}
+
+/* BUTTON */
+.btn {
+    background: green;
+    color: white;
+    padding: 10px;
+    display: inline-block;
+}
+
+/* FOOTER */
+.footer {
+    background: green;
+    color: white;
+    padding: 20px;
+    margin-top: 50px;
+}
+
+.form-container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.form-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.account-box {
+    background: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.account-actions {
+    text-align: center;
+}
+
+.about-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+
+
+
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .cards {
+        flex-direction: column;
+    }
+
+    .nav-links {
+        flex-direction: column;
+    }
+}
+

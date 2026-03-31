@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2>Pay Water Bill</h2>
+
+<p>Balance: R{{ balance }}</p>
+
+<form method="POST">
+{% csrf_token %}
+<input type="number" name="amount" placeholder="Enter amount">
+<button class="btn">Pay Now</button>
+</form>
+
+{% endblock %}

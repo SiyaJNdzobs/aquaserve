@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2>Report Issue</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<select name="issue" required>
+    <option value="">Select Issue</option>
+    <option>Burst Pipe</option>
+    <option>Water Leak</option>
+    <option>Supply Issue</option>
+</select>
+
+<input type="text" name="location" placeholder="Enter location" required>
+
+<input type="file" disabled>
+<p>(Image upload simulated)</p>
+
+<button class="btn">Submit</button>
+
+</form>
+
+{% endblock %}
