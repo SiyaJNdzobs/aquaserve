@@ -2,12 +2,15 @@
 <html>
 <head>
     <title>AquaServe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
 <nav class="navbar">
     <div class="logo">💧 AquaServe</div>
+
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
 
     <ul class="nav-links">
         <li><a href="/">Home</a></li>
@@ -28,22 +31,34 @@
     </ul>
 
     <div class="auth">
-        <a href="/login/">Login</a>
+        <a href="/login/" class="auth-btn">Sign Up / Login</a>
     </div>
 </nav>
 
-<div class="container">
-    {% for message in messages %}
-        <div class="alert">{{ message }}</div>
-    {% endfor %}
-    {% block content %}{% endblock %}
+<script>
+function toggleMenu() {
+    document.querySelector('.nav-links').classList.toggle('active');
+}
+</script>
+
+<div class="content-wrapper">
+    <div class="container">
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+    </div>
 </div>
 
 <footer class="footer">
-    <div>
-        <p>📞 +27 012 345 6789</p>
-        <p>✉ support@aquaserve.gov.za</p>
+    <div class="footer-left">
         <p>© 2026 AquaServe</p>
+    </div>
+
+    <div class="footer-social">
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://whatsapp.com" target="_blank"><i class="fab fa-whatsapp"></i></a>
     </div>
 </footer>
 
