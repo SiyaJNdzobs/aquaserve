@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="form-container">
-    <h2>📍 Track Request</h2>
+    <h2> Track Request</h2>
     <p style="color: #2e8b57; font-weight: bold;">Logged in as: {{ username }}</p>
 
     <div class="service-info">
@@ -14,7 +14,7 @@
     <form method="POST">
         {% csrf_token %}
         <input type="text" name="ref" placeholder="Enter your Reference Number (e.g., REF1234)" required>
-        <button class="btn">🔍 Track Status</button>
+        <button class="btn"> Track Status</button>
     </form>
 
     {% if status %}
@@ -26,7 +26,7 @@
     {% endif %}
 
     <div class="service-info">
-        <h3>📊 Status Meanings</h3>
+        <h3> Status Meanings</h3>
         <ul style="text-align: left; display: inline-block;">
             <li><strong>Request Received:</strong> Your issue has been logged</li>
             <li><strong>In Progress:</strong> Team is working on your request</li>
