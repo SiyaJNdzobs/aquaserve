@@ -5,47 +5,91 @@
     <h2> Report Issue</h2>
     <p style="color: #2e8b57; font-weight: bold;">Logged in as: {{ username }}</p>
 
-    <div class="service-info">
-        <h3> Quick Response Service</h3>
-        <p>Latest updates: the system now processes reports in under 2 business hours and updates you progress status in the system to check use ref number given to you.
-             </p>
-        <p><strong>Our Response Times:</strong></p>
-        <ul style="text-align: left; display: inline-block;">
-            <li> Emergency (Burst Pipe): 1-2 hours</li>
-            <li> Water Leak: 4-6 hours</li>
-            <li> Supply Issue: 24 hours</li>
-        </ul>
-    </div>
-
     {% if messages %}
         {% for message in messages %}
             <div class="alert">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
-    <form method="POST">
-        {% csrf_token %}
+    <!-- REPORT ISSUE SECTION -->
+    <div style="margin-bottom: 40px;">
+        <h3 style="border-bottom: 2px solid #2e8b57; padding-bottom: 10px;">Report Service Issue</h3>
+        
+        <div class="service-info">
+            <h4> Quick Response Service</h4>
+            <p>Latest updates: the system now processes reports in under 2 business hours and updates you progress status in the system to check use ref number given to you.</p>
+            <p><strong>Our Response Times:</strong></p>
+            <ul style="text-align: left; display: inline-block;">
+                <li> Emergency (Burst Pipe): 1-2 hours</li>
+                <li> Water Leak: 4-6 hours</li>
+                <li> Supply Issue: 24 hours</li>
+            </ul>
+        </div>
 
-        <select name="issue" required>
-            <option value="">Select Issue Type</option>
-            <option>Burst Pipe</option>
-            <option>Water Leak</option>
-            <option>Supply Issue</option>
-            <option>Pressure Problem</option>
-            <option>Water Quality Issue</option>
-        </select>
+        <form method="POST">
+            {% csrf_token %}
 
-        <input type="text" name="location" placeholder="Enter your location or street address" required>
-        <input type="text" placeholder="Description of issue" disabled style="opacity: 0.6;">
+            <select name="issue" required>
+                <option value="">Select Issue Type</option>
+                <option>Burst Pipe</option>
+                <option>Water Leak</option>
+                <option>Supply Issue</option>
+                <option>Pressure Problem</option>
+                <option>Water Quality Issue</option>
+            </select>
 
-        <p style="font-size: 0.9rem; color: #666;">(Image upload simulated)</p>
+            <input type="text" name="location" placeholder="Enter your location or street address" required>
+            <input type="text" placeholder="Description of issue" disabled style="opacity: 0.6;">
 
-        <button class="btn">Submit Report</button>
-    </form>
+            <p style="font-size: 0.9rem; color: #666;">(Image upload simulated)</p>
 
-    <div class="service-info">
-        <h3> After Submitting</h3>
-        <p>You'll receive a reference number to track your request. You will use this to track progress of your quiry or call logged.</p>
+            <button class="btn">Submit Report</button>
+        </form>
+
+        <div class="service-info">
+            <h4> After Submitting</h4>
+            <p>You'll receive a reference number to track your request. You will use this to track progress of your query or call logged.</p>
+        </div>
+    </div>
+
+    <!-- DISPUTE BALANCE SECTION -->
+    <div style="margin-top: 50px; padding-top: 30px; border-top: 3px solid #ddd;">
+        <h3 style="border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">Dispute Balance</h3>
+        
+        <div class="account-details" style="background: #f9f4ef; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="margin-top: 0; color: #2e8b57;">Your Account Details</h4>
+            <p><strong>Username:</strong> {{ username }}</p>
+            <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Home Address:</strong> {{ home_address }}</p>
+            <p><strong>Cell Number:</strong> {{ cell_number }}</p>
+            <p style="font-size: 1.1rem; color: #e74c3c; margin-top: 15px;"><strong>Current Balance:</strong> R{{ balance }}</p>
+        </div>
+
+        <div class="service-info">
+            <h4> How to Raise a Balance Dispute</h4>
+            <p>If you believe your water bill balance is incorrect, you can dispute it here. Provide your invoice reference number and the amount you believe is incorrect. Our team will review your dispute within 3-5 business days.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="invoice_ref" style="display: block; margin: 10px 0; font-weight: bold;">Invoice Reference Number</label>
+            <input type="text" id="invoice_ref" name="invoice_ref" placeholder="Enter invoice reference number (e.g., INV-2026-001234)" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <label for="invoice_balance" style="display: block; margin: 10px 0; font-weight: bold;">Disputed Invoice Balance (R)</label>
+            <input type="number" id="invoice_balance" name="invoice_balance" placeholder="Enter the balance amount you are disputing" step="0.01" min="0" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+
+            <label for="dispute_reason" style="display: block; margin: 10px 0; font-weight: bold;">Reason for Dispute</label>
+            <textarea id="dispute_reason" name="dispute_reason" placeholder="Briefly explain why you are disputing this balance (optional)" rows="4" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+
+            <button class="btn" style="background: #e74c3c; margin-top: 10px;">Submit Dispute</button>
+        </form>
+
+        <div class="service-info">
+            <h4> After Submitting Your Dispute</h4>
+            <p>You'll receive a dispute reference number (starting with DSP) to track your dispute. Use this reference number to inquire about the status of your dispute or contact our billing department.</p>
+            <p><strong>Resolution Timeline:</strong> 3-5 business days</p>
+        </div>
     </div>
 </div>
 

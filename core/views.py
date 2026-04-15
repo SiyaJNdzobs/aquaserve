@@ -5,6 +5,7 @@ import random
 # SESSION STORAGE
 users = {}
 requests_db = {}
+disputes_db = {}
 
 balances = {
     "user1": 500,
@@ -61,29 +62,86 @@ def register(request):
 
 # REPORT ISSUE
 def report_issue(request):
-    user = request.session.get('user', 'Guest')
+    user = request.session.get('user')
+    if user is None:
+        return redirect('login')
+
     ref = None
+    dispute_ref = None
+    profile = users.get(user, {})
+    balance = balances.get(user, 100)
+
     if request.method == 'POST':
-        issue = request.POST.get('issue')
-        location = request.POST.get('location')
+        # Check if this is a dispute balance submission
+        if 'invoice_ref' in request.POST:
+            invoice_ref = request.POST.get('invoice_ref', '').strip()
+            invoice_balance = request.POST.get('invoice_balance', '').strip()
 
-        if not issue or not location:
-            messages.error(request, "All fields required")
+            if not invoice_ref or not invoice_balance:
+                messages.error(request, "All dispute fields are required")
+            else:
+                try:
+                    invoice_balance = float(invoice_balance)
+                    dispute_ref = "DSP" + str(random.randint(10000, 99999))
+                    disputes_db[dispute_ref] = {
+                        'user': user,
+                        'invoice_ref': invoice_ref,
+                        'invoice_balance': invoice_balance,
+                        'status': 'Dispute Received'
+                    }
+                    messages.success(request, f"Balance dispute submitted! Reference: {dispute_ref}")
+                except ValueError:
+                    messages.error(request, "Please enter a valid balance amount")
         else:
-            ref = "REF" + str(random.randint(1000, 9999))
-            requests_db[ref] = "Request Received"
-            messages.success(request, f"Issue submitted! Reference: {ref}")
+            # Regular issue report
+            issue = request.POST.get('issue')
+            location = request.POST.get('location')
 
-    return render(request, 'core/report.html', {'ref': ref, 'username': user})
+            if not issue or not location:
+                messages.error(request, "All fields required")
+            else:
+                ref = "REF" + str(random.randint(1000, 9999))
+                requests_db[ref] = "Request Received"
+                messages.success(request, f"Issue submitted! Reference: {ref}")
+
+    return render(request, 'core/report.html', {
+        'ref': ref,
+        'dispute_ref': dispute_ref,
+        'username': user,
+        'email': profile.get('email', 'Not set'),
+        'home_address': profile.get('home_address', 'Not set'),
+        'cell_number': profile.get('cell_number', 'Not set'),
+        'balance': balance,
+    })
 
 # TRACK
 def track_request(request):
     user = request.session.get('user', 'Guest')
     status = None
+    ref_type = None
+    
     if request.method == 'POST':
-        ref = request.POST.get('ref')
-        status = requests_db.get(ref, "Reference not found")
-    return render(request, 'core/track.html', {'status': status, 'username': user})
+        ref = request.POST.get('ref', '').strip()
+        
+        # Check if it's a dispute reference (starts with DSP)
+        if ref.startswith('DSP'):
+            dispute = disputes_db.get(ref)
+            if dispute:
+                status = dispute.get('status', 'Dispute not found')
+                ref_type = 'dispute'
+            else:
+                status = "Dispute reference not found"
+                ref_type = None
+        # Check if it's a regular request reference (starts with REF)
+        else:
+            status = requests_db.get(ref, "Reference not found")
+            ref_type = 'request'
+    
+    return render(request, 'core/track.html', {
+        'status': status,
+        'ref_type': ref_type,
+        'username': user
+    })
 
 # ABOUT
 def about(request):
