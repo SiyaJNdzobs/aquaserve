@@ -3,6 +3,28 @@
 
 <h1 class="hero">Your Water, <span>Our Priority</span></h1>
 
+{% if username %}
+<div class="dashboard-section">
+    <h2>My Active Requests</h2>
+    {% if active_requests %}
+    <div class="active-requests">
+        {% for request in active_requests %}
+        <div class="active-request-item">
+            <div class="request-info">
+                <strong>{{ request.issue }}</strong>
+                <span class="status status-{{ request.status|slugify }}">{{ request.status }}</span>
+            </div>
+            <div class="request-ref">Ref: {{ request.ref }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'track' %}" class="btn">View All Requests</a>
+    {% else %}
+    <p class="no-active">No active requests. All caught up!</p>
+    {% endif %}
+</div>
+{% endif %}
+
 <div class="cards">
 
 <div class="card">
@@ -28,5 +50,70 @@
 </div>
 
 </div>
+
+<style>
+.dashboard-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-section h2 {
+    color: #2e8b57;
+    border-bottom: 2px solid #2e8b57;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.active-requests {
+    margin-bottom: 20px;
+}
+
+.active-request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.active-request-item:last-child {
+    border-bottom: none;
+}
+
+.request-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-request-received { background: #fff3cd; color: #856404; }
+.status-in-progress { background: #cce5ff; color: #004085; }
+.status-resolved { background: #d4edda; color: #155724; }
+.status-dispute-received { background: #f8d7da; color: #721c24; }
+
+.request-ref {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.no-active {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
+}
+</style>
 
 {% endblock %}

@@ -1,50 +1,185 @@
 {% extends 'core/base.html' %}
 {% block content %}
 
-<div class="form-container">
-    <h2> Track Request</h2>
+<div class="dashboard-container">
+    <h2>My Requests Dashboard</h2>
     <p style="color: #2e8b57; font-weight: bold;">Logged in as: {{ username }}</p>
 
-    <div class="service-info">
-        <h3>Real-Time Tracking</h3>
-        <p>News: We recently launched improved location-based tracking for requests in your area. Check status updates below.</p>
-        <p style="font-size: 0.9rem; color: #666;">Track your water service request or balance dispute with our system. Use your reference number from the confirmation message.</p>
+    {% if user_requests or user_disputes %}
+    <div class="requests-grid">
+        {% for request in user_requests %}
+        <div class="request-card">
+            <div class="card-header">
+                <div class="issue-info">
+                    <div class="issue-icon">
+                        {% if request.issue == 'Burst Pipe' %}🚨{% elif request.issue == 'Water Leak' %}💧{% elif request.issue == 'Supply Issue' %}🚱{% elif request.issue == 'Pressure Problem' %}⚡{% elif request.issue == 'Water Quality Issue' %}🧪{% else %}🔧{% endif %}
+                    </div>
+                    <div class="issue-type">{{ request.issue }}</div>
+                </div>
+                <div class="status-badge status-{{ request.status|slugify }}">{{ request.status }}</div>
+            </div>
+            <div class="card-body">
+                <p><strong>Location:</strong> {{ request.location }}</p>
+                {% if request.description %}
+                <p><strong>Description:</strong> {{ request.description|truncatechars:50 }}</p>
+                {% endif %}
+                <p class="ref-number">Ref: {{ request.ref }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn small">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% for dispute in user_disputes %}
+        <div class="request-card dispute">
+            <div class="card-header">
+                <div class="issue-type">Balance Dispute</div>
+                <div class="status-badge status-{{ dispute.status|slugify }}">{{ dispute.status }}</div>
+            </div>
+            <div class="card-body">
+                <p><strong>Invoice Ref:</strong> {{ dispute.invoice_ref }}</p>
+                <p><strong>Amount:</strong> R{{ dispute.invoice_balance }}</p>
+                <p class="ref-number">Ref: {{ dispute.ref }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn small">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-
-    <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="ref" placeholder="Enter your Reference Number (e.g., REF1234 or DSP12345)" required>
-        <button class="btn"> Track Status</button>
-    </form>
-
-    {% if status %}
-    <div class="status-box">
-        <h3>{% if ref_type == 'dispute' %}Dispute Status{% else %}Request Status{% endif %}</h3>
-        <p style="margin-top: 14px; font-size: 1.1rem;"><strong>{{ status }}</strong></p>
-        <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Last updated: Now</p>
+    {% else %}
+    <div class="no-requests">
+        <h3>No Active Requests</h3>
+        <p>You don't have any active service requests or disputes at the moment.</p>
+        <a href="{% url 'report' %}" class="btn">Report New Issue</a>
     </div>
     {% endif %}
-
-    <div class="service-info">
-        <h3> Reference Types</h3>
-        <ul style="text-align: left; display: inline-block;">
-            <li><strong>REF#### (Service Requests):</strong> For reporting burst pipes, water leaks, supply issues, etc.</li>
-            <li><strong>DSP##### (Balance Disputes):</strong> For disputing your water bill balance</li>
-        </ul>
-    </div>
-
-    <div class="service-info">
-        <h3> Status Meanings</h3>
-        <ul style="text-align: left; display: inline-block;">
-            <li><strong>Request Received:</strong> Your issue has been logged</li>
-            <li><strong>In Progress:</strong> Team is working on your request</li>
-            <li><strong>Resolved:</strong> Issue has been fixed</li>
-            <li><strong>Closed:</strong> Request completed</li>
-            <li><strong>Dispute Received:</strong> Your balance dispute has been logged</li>
-            <li><strong>Under Review:</strong> Our billing team is reviewing your dispute</li>
-            <li><strong>Resolved:</strong> Dispute has been resolved</li>
-        </ul>
-    </div>
 </div>
+
+<style>
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.requests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.request-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.request-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.request-card.dispute {
+    border-left: 4px solid #e74c3c;
+}
+
+.card-header {
+    background: #f8f9fa;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.issue-info {
+    display: flex;
+    align-items: center;
+}
+
+.issue-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.issue-type {
+    font-weight: bold;
+    color: #333;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-request-received { background: #fff3cd; color: #856404; }
+.status-in-progress { background: #cce5ff; color: #004085; }
+.status-resolved { background: #d4edda; color: #155724; }
+.status-dispute-received { background: #f8d7da; color: #721c24; }
+.status-under-review { background: #e2e3e5; color: #383d41; }
+
+.card-body {
+    padding: 15px;
+}
+
+.card-body p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+
+.ref-number {
+    font-family: monospace;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.card-footer {
+    padding: 15px;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.btn.small {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    background: #2e8b57;
+    color: white;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.btn.small:hover {
+    background: #245c44;
+}
+
+.no-requests {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.no-requests h3 {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.no-requests p {
+    color: #888;
+    margin-bottom: 20px;
+}
+</style>
 
 {% endblock %}
