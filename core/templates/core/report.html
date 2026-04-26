@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="form-container">
-    <h2> Report Issue</h2>
+    <h2>Report Issue</h2>
     <p style="color: #2e8b57; font-weight: bold;">Logged in as: {{ username }}</p>
 
     {% if messages %}
@@ -15,21 +15,11 @@
     <div style="margin-bottom: 40px;">
         <h3 style="border-bottom: 2px solid #2e8b57; padding-bottom: 10px;">Report Service Issue</h3>
         
-        <div class="service-info">
-            <h4> Quick Response Service</h4>
-            <p>Latest updates: the system now processes reports in under 2 business hours and updates you progress status in the system to check use ref number given to you.</p>
-            <p><strong>Our Response Times:</strong></p>
-            <ul style="text-align: left; display: inline-block;">
-                <li> Emergency (Burst Pipe): 1-2 hours</li>
-                <li> Water Leak: 4-6 hours</li>
-                <li> Supply Issue: 24 hours</li>
-            </ul>
-        </div>
-
         <form method="POST">
             {% csrf_token %}
 
-            <select name="issue" required>
+            <label for="issue">Issue Type</label>
+            <select id="issue" name="issue" required>
                 <option value="">Select Issue Type</option>
                 <option>Burst Pipe</option>
                 <option>Water Leak</option>
@@ -38,8 +28,11 @@
                 <option>Water Quality Issue</option>
             </select>
 
-            <input type="text" name="location" placeholder="Enter your location or street address" required>
-            <input type="text" placeholder="Description of issue" disabled style="opacity: 0.6;">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" placeholder="Enter your location or street address" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Describe the issue in detail" rows="4"></textarea>
 
             <p style="font-size: 0.9rem; color: #666;">(Image upload simulated)</p>
 
@@ -48,7 +41,7 @@
 
         <div class="service-info">
             <h4> After Submitting</h4>
-            <p>You'll receive a reference number to track your request. You will use this to track progress of your query or call logged.</p>
+            <p>You'll be redirected to a confirmation page with your reference number to track your request.</p>
         </div>
     </div>
 
