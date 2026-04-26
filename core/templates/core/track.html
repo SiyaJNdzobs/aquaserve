@@ -8,22 +8,30 @@
     <div class="service-info">
         <h3>Real-Time Tracking</h3>
         <p>News: We recently launched improved location-based tracking for requests in your area. Check status updates below.</p>
-        <p style="font-size: 0.9rem; color: #666;">Track your water service request with our new GPS-enabled system.</p>
+        <p style="font-size: 0.9rem; color: #666;">Track your water service request or balance dispute with our system. Use your reference number from the confirmation message.</p>
     </div>
 
     <form method="POST">
         {% csrf_token %}
-        <input type="text" name="ref" placeholder="Enter your Reference Number (e.g., REF1234)" required>
+        <input type="text" name="ref" placeholder="Enter your Reference Number (e.g., REF1234 or DSP12345)" required>
         <button class="btn"> Track Status</button>
     </form>
 
     {% if status %}
     <div class="status-box">
-        <h3>Request Status</h3>
+        <h3>{% if ref_type == 'dispute' %}Dispute Status{% else %}Request Status{% endif %}</h3>
         <p style="margin-top: 14px; font-size: 1.1rem;"><strong>{{ status }}</strong></p>
         <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Last updated: Now</p>
     </div>
     {% endif %}
+
+    <div class="service-info">
+        <h3> Reference Types</h3>
+        <ul style="text-align: left; display: inline-block;">
+            <li><strong>REF#### (Service Requests):</strong> For reporting burst pipes, water leaks, supply issues, etc.</li>
+            <li><strong>DSP##### (Balance Disputes):</strong> For disputing your water bill balance</li>
+        </ul>
+    </div>
 
     <div class="service-info">
         <h3> Status Meanings</h3>
@@ -32,6 +40,9 @@
             <li><strong>In Progress:</strong> Team is working on your request</li>
             <li><strong>Resolved:</strong> Issue has been fixed</li>
             <li><strong>Closed:</strong> Request completed</li>
+            <li><strong>Dispute Received:</strong> Your balance dispute has been logged</li>
+            <li><strong>Under Review:</strong> Our billing team is reviewing your dispute</li>
+            <li><strong>Resolved:</strong> Dispute has been resolved</li>
         </ul>
     </div>
 </div>
