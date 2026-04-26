@@ -16,36 +16,7 @@ balances = {
 }
 
 def home(request):
-    user = request.session.get('user')
-    active_requests = []
-    
-    if user:
-        # Get user's active requests (not resolved/closed)
-        for ref, data in requests_db.items():
-            if isinstance(data, dict) and data.get('user') == user:
-                status = data.get('status', '').lower()
-                if status not in ['resolved', 'closed']:
-                    active_requests.append({
-                        'ref': ref,
-                        'issue': data.get('issue', 'Unknown'),
-                        'status': data.get('status', 'Unknown'),
-                    })
-        
-        # Get active disputes
-        for ref, data in disputes_db.items():
-            if data.get('user') == user:
-                status = data.get('status', '').lower()
-                if status not in ['resolved', 'closed']:
-                    active_requests.append({
-                        'ref': ref,
-                        'issue': f"Balance Dispute - {data.get('invoice_ref', '')}",
-                        'status': data.get('status', 'Unknown'),
-                    })
-    
-    return render(request, 'core/home.html', {
-        'active_requests': active_requests,
-        'username': user
-    })
+    return render(request, 'core/home.html')
 
 # AUTH
 def login_view(request):
@@ -125,21 +96,13 @@ def report_issue(request):
             # Regular issue report
             issue = request.POST.get('issue')
             location = request.POST.get('location')
-            description = request.POST.get('description', '')
 
             if not issue or not location:
                 messages.error(request, "All fields required")
             else:
                 ref = "REF" + str(random.randint(1000, 9999))
-                requests_db[ref] = {
-                    'user': user,
-                    'issue': issue,
-                    'location': location,
-                    'description': description,
-                    'status': 'Request Received'
-                }
-                # Redirect to success page instead of showing message
-                return redirect('submission_success', ref=ref)
+                requests_db[ref] = "Request Received"
+                messages.success(request, f"Issue submitted! Reference: {ref}")
 
     return render(request, 'core/report.html', {
         'ref': ref,
@@ -151,54 +114,32 @@ def report_issue(request):
         'balance': balance,
     })
 
-# SUBMISSION SUCCESS
-def submission_success(request, ref):
-    user = request.session.get('user')
-    if user is None:
-        return redirect('login')
-    
-    request_data = requests_db.get(ref)
-    if not request_data or request_data.get('user') != user:
-        return redirect('home')
-    
-    return render(request, 'core/submission_success.html', {
-        'ref': ref,
-        'request_data': request_data,
-        'username': user
-    })
-
-# TRACK / DASHBOARD / DASHBOARD
+# TRACK
 def track_request(request):
-    user = request.session.get('user')
-    if user is None:
-        return redirect('login')
+    user = request.session.get('user', 'Guest')
+    status = None
+    ref_type = None
     
-    # Get user's requests
-    user_requests = []
-    for ref, data in requests_db.items():
-        if isinstance(data, dict) and data.get('user') == user:
-            user_requests.append({
-                'ref': ref,
-                'issue': data.get('issue', 'Unknown'),
-                'location': data.get('location', 'Unknown'),
-                'status': data.get('status', 'Unknown'),
-                'description': data.get('description', ''),
-            })
-    
-    # Get user's disputes
-    user_disputes = []
-    for ref, data in disputes_db.items():
-        if data.get('user') == user:
-            user_disputes.append({
-                'ref': ref,
-                'invoice_ref': data.get('invoice_ref', ''),
-                'invoice_balance': data.get('invoice_balance', 0),
-                'status': data.get('status', 'Unknown'),
-            })
+    if request.method == 'POST':
+        ref = request.POST.get('ref', '').strip()
+        
+        # Check if it's a dispute reference (starts with DSP)
+        if ref.startswith('DSP'):
+            dispute = disputes_db.get(ref)
+            if dispute:
+                status = dispute.get('status', 'Dispute not found')
+                ref_type = 'dispute'
+            else:
+                status = "Dispute reference not found"
+                ref_type = None
+        # Check if it's a regular request reference (starts with REF)
+        else:
+            status = requests_db.get(ref, "Reference not found")
+            ref_type = 'request'
     
     return render(request, 'core/track.html', {
-        'user_requests': user_requests,
-        'user_disputes': user_disputes,
+        'status': status,
+        'ref_type': ref_type,
         'username': user
     })
 
