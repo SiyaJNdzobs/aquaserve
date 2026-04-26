@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="form-container">
-    <h2>Report Issue</h2>
+    <h2> Report Issue</h2>
     <p style="color: #2e8b57; font-weight: bold;">Logged in as: {{ username }}</p>
 
     {% if messages %}
@@ -18,8 +18,7 @@
         <form method="POST">
             {% csrf_token %}
 
-            <label for="issue">Issue Type</label>
-            <select id="issue" name="issue" required>
+            <select name="issue" required>
                 <option value="">Select Issue Type</option>
                 <option>Burst Pipe</option>
                 <option>Water Leak</option>
@@ -28,11 +27,8 @@
                 <option>Water Quality Issue</option>
             </select>
 
-            <label for="location">Location</label>
-            <input type="text" id="location" name="location" placeholder="Enter your location or street address" required>
-
-            <label for="description">Description</label>
-            <textarea id="description" name="description" placeholder="Describe the issue in detail" rows="4"></textarea>
+            <input type="text" name="location" placeholder="Enter your location or street address" required>
+            <input type="text" placeholder="Description of issue" disabled style="opacity: 0.6;">
 
             <p style="font-size: 0.9rem; color: #666;">(Image upload simulated)</p>
 
